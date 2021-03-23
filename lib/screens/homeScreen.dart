@@ -34,8 +34,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (state is SearchInitState) {
                   return Text(state.text.toString());
                 } else if (state is SearchDataChange) {
-                  return state.text != "" 
-                  ? Text('Résultats de recherche pour ' + state.text.toString() + ' :')
+                  return state.text != ""
+                  ? Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(left: 30, top: 20),
+                    child: RichText(
+                        text: TextSpan(
+                          text: 'Résultats de recherche pour ',
+                          style: DefaultTextStyle.of(context).style,
+                          children: <TextSpan>[
+                            TextSpan(text: state.text.toString(), style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: ' :'),
+                          ],
+                        )
+                    ),
+                  )
                   : Text("");
                 } else {
                   return Text("something worng");

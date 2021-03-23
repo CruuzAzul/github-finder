@@ -6,7 +6,6 @@ import 'package:github_search/modules/search/bloc/search_bloc.dart';
 class FormTextField extends StatelessWidget {
   // final ProfilesRepository profilesRepository;
   // const FormTextField({Key key, @required this.profilesRepository}) : super(key: key);
-  
 
   @override
   Widget build(BuildContext context) {
