@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:github_search/modules/profiles/bloc/profiles_bloc.dart';
 import 'package:github_search/modules/profiles/repositories/profile_repository.dart';
+import 'package:github_search/modules/profiles/widgets/profilesList.dart';
 import 'package:github_search/modules/search/bloc/search_bloc.dart';
 import 'package:github_search/modules/search/widgets/formTextField.dart';
 
@@ -50,10 +52,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   )
                   : Text("");
-                } else {
-                  return Text("something worng");
                 }
               },
+            ),
+          ),
+          Container(
+            child: BlocProvider(
+              create: (context) => ProfilesBloc(
+                profilesRepository: ProfilesRepository()
+              )..add(FetchProfilesEvent()),
+              child: ProfilesList(),
             ),
           )
         ],
