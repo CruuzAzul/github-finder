@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:github_search/screens/widgets/formInputField.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:github_search/modules/profiles/repositories/profile_repository.dart';
+import 'package:github_search/modules/search/bloc/search_bloc.dart';
+import 'package:github_search/modules/search/widgets/formTextField.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -18,27 +21,29 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(40),
-            ),
-            child: TextField(
-              decoration: InputDecoration(
-                suffixIcon: Icon(Icons.search),
-                border: InputBorder.none,
-                hintText: 'Enter user here',
-                contentPadding: EdgeInsets.all(15),
-              ),
-              onChanged: (text) {
-                print("Text field: $text");
+      body: Column(
+        children: [
+          FormTextField(
+            // profilesRepository: ProfilesRepository(
+            //   text: "coucou",
+            // ),
+          ),
+          Container(
+            child: BlocBuilder<SearchBloc, SearchState>(
+              builder: (context, state) {
+                if (state is SearchInitState) {
+                  return Text(state.text.toString());
+                } else if (state is SearchDataChange) {
+                  return state.text != "" 
+                  ? Text('Résultats de recherche pour ' + state.text.toString() + ' :')
+                  : Text("");
+                } else {
+                  return Text("something worng");
+                }
               },
             ),
-          ),
-        ),
+          )
+        ],
       ),
     );
   }
