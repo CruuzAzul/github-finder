@@ -15,9 +15,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     SearchEvent event,
   ) async* {
     if (event is SearchInit) {
-      yield SearchInitState(text: "coucou");
+      yield SearchInitState(text: "");
     } else if (event is SearchChange) {
-      print("je passe là");
       yield SearchDataChange(text: event.data);
     }
   }
