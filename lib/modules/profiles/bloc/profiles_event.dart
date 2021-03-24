@@ -8,4 +8,8 @@ abstract class ProfilesEvent {
   List<Object> get props => [];
 }
 
-class FetchProfilesEvent extends ProfilesEvent {}
+class FetchProfilesEvent extends ProfilesEvent {
+  final String searchText;
+
+  FetchProfilesEvent(this.searchText);
+}

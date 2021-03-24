@@ -5,22 +5,23 @@ import 'package:dio/dio.dart';
 
 @immutable
 class ProfilesRepository {
-  // final String text;
+  final String searchText;
   Dio dio = new Dio();
 
+  ProfilesRepository(this.searchText);
   // ProfilesRepository({@required this.text}) : assert(text != null);
 
-  Future<List<Profile>> getProfiles() async {
+  Future<List<Profile>> getProfiles(searchText) async {
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (RequestOptions options) {
         options.headers["Authorization"] =
-            "token " + "8dd73e3189b02027a2471a1b3ddbd13cf088ebd1";
+            "token " + "";
         return options;
       },
     ));
     try {
       Response response = await dio.get(
-          "https://api.github.com/search/users?q=nar+in:login+in:fullname&type=Users&page=0&per_page=10&sort=score");
+          'https://api.github.com/search/users?q=$searchText+in:login+in:fullname&type=Users&page=0&per_page=10&sort=score');
       final parsed = response.data["items"].cast<Map<String, dynamic>>();
       // var dataTest;
       parsed.forEach((elem) => {
@@ -102,7 +103,6 @@ class ProfilesRepository {
   Future<int> getNbRepos(String url) async {
     try {
       Response response = await dio.get(url);
-      print(response.data.runtimeType);
       return response.data.isNotEmpty ? response.data.length : 0;
     } catch (e) {
       print("ERROR Fetching Stars number !");

@@ -11,10 +11,44 @@ class ProfilesList extends StatelessWidget {
     return Container(
       child: BlocBuilder<ProfilesBloc, ProfilesState>(
         builder: (context, state) {
+          if (state is ProfilesInitialeState) {
+            return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 100),
+                  Image.network(
+                    "https://git-user-assignment.herokuapp.com/images/octocat.png",
+                    width: 300,
+                  ),
+                  SizedBox(height: 40),
+                  Text(
+                    'Enter a name in the search bar to start !',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.black),
+                  ),
+                ]);
+          }
+
           if (state is ProfilesFetchErrorState) {
-            return Center(
-              child: Text('An error occurred'),
-            );
+            return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 100),
+                  Image.network(
+                    "https://www.pngkey.com/png/detail/442-4423751_github-octocat-png-github-inspectocat-896-github-hack.png",
+                    width: 300,
+                  ),
+                  SizedBox(height: 40),
+                  Text(
+                    'An error occurred ! Please retry later !',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.black),
+                  ),
+                ]);
           }
 
           if (state is ProfilesFetchInProgressState) {

@@ -8,6 +8,10 @@ abstract class ProfilesState extends Equatable {
   List<Object> get props => [];
 }
 
+class ProfilesInitialeState extends ProfilesState {
+  const ProfilesInitialeState();
+}
+
 class ProfilesFetchInProgressState extends ProfilesState {
   const ProfilesFetchInProgressState();
 }
