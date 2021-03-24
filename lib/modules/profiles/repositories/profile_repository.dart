@@ -1,43 +1,113 @@
-import 'dart:convert';
 import 'package:github_search/modules/profiles/exceptions/custom_exceptions.dart';
 import 'package:github_search/modules/profiles/models/profile.dart';
 import 'package:meta/meta.dart';
 import 'package:dio/dio.dart';
 
-const kApiBaseUrl = 'https://api.punkapi.com/v2';
-const kBeerResource = 'beers';
-
 @immutable
 class ProfilesRepository {
   // final String text;
+  Dio dio = new Dio();
 
   // ProfilesRepository({@required this.text}) : assert(text != null);
 
   Future<List<Profile>> getProfiles() async {
-    print("-----------------");
-    print("Passage dans la fonction getProfiles");
-    print("-----------------");
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (RequestOptions options) {
+        options.headers["Authorization"] =
+            "token " + "8dd73e3189b02027a2471a1b3ddbd13cf088ebd1";
+        return options;
+      },
+    ));
     try {
-      Response response = await Dio().get("https://api.github.com/search/users?q=Cruz-A+in:login+in:fullname&type=Users&page=0&per_page=10&sort=score");
-      print("-----------------");
-      print(response.data.runtimeType);
-      print("-----------------");
-      final parsed = jsonDecode(response.data.items).cast<Map<String, dynamic>>();
-      return parsed.map<Profile>((json) => Profile.fromJson(json)).toList();
+      Response response = await dio.get(
+          "https://api.github.com/search/users?q=nar+in:login+in:fullname&type=Users&page=0&per_page=10&sort=score");
+      final parsed = response.data["items"].cast<Map<String, dynamic>>();
+      // var dataTest;
+      parsed.forEach((elem) => {
+            // dataTest = getData(elem["followers_url"]),
+            elem["first_follower_img"] = getImgFollower(elem["followers_url"]),
+            elem["first_follower_name"] =
+                getNameFollower(elem["followers_url"]),
+            elem["nb_followers"] = getNbFollowers(elem["followers_url"]),
+            elem["nb_stars"] = getNbStars(elem["repos_url"]),
+            elem["nb_repo"] = getNbRepos(elem["repos_url"]),
+          });
+      return (parsed.map<Profile>((json) => Profile.fromJson(json)).toList());
     } catch (e) {
-      return Future.error(FetchDataException(
-          'error occurred when fetch GitHub API.'));
+      print("ERROR Fetching data !!");
+      return Future.error(
+          FetchDataException('error occurred when fetch GitHub API.'));
     }
-    // final response = await client.get(
-    //     '$kApiBaseUrl/$kBeerResource?page=$pageNumber&per_page=$itemsPerPage');
+  }
 
-    // if (response.statusCode != 200) {
-    //   return Future.error(FetchDataException(
-    //       'error occurred when fetch GitHub API: {$response.statusCode}'));
-    // }
+  // Future<String> getData(String url) async {
+  //   try {
+  //     Response response = await dio.get(url);
+  //     return response.data.isNotEmpty
+  //     ? response.data.cast<Map<String, dynamic>>()
+  //     : "";
+  //   } catch (e) {
+  //     print("ERROR !");
+  //     return Future.error(FetchDataException(
+  //         'error occurred when fetch GitHub API - First follower image.'));
+  //   }
+  // }
 
-    // final parsed = jsonDecode(response.body).cast<Map<String, dynamic>>();
+  Future<String> getImgFollower(String url) async {
+    try {
+      Response response = await dio.get(url);
+      return response.data.isNotEmpty ? response.data[0]["avatar_url"] : "";
+    } catch (e) {
+      print("ERROR Fetching Image first Follower!");
+      return Future.error(FetchDataException(
+          'error occurred when fetch GitHub API - First follower image.'));
+    }
+  }
 
-    // return parsed.map<Profile>((json) => Profile.fromJson(json)).toList();
+  Future<String> getNameFollower(String url) async {
+    try {
+      Response response = await dio.get(url);
+      return response.data.isNotEmpty ? response.data[0]["login"] : "";
+    } catch (e) {
+      print("ERROR Fetching Name first Follower!");
+      return Future.error(FetchDataException(
+          'error occurred when fetch GitHub API - First follower name.'));
+    }
+  }
+
+  Future<int> getNbFollowers(String url) async {
+    try {
+      Response response = await dio.get(url);
+      return response.data.isNotEmpty ? response.data.length - 1 : 0;
+    } catch (e) {
+      print("ERROR Fetching Followers number !");
+      return Future.error(FetchDataException(
+          'error occurred when fetch GitHub API - Followers number.'));
+    }
+  }
+
+  Future<int> getNbStars(String url) async {
+    try {
+      Response response = await dio.get(url);
+      var counter = 0;
+      response.data.forEach((elem) => {counter += elem["stargazers_count"]});
+      return response.data.isNotEmpty ? counter : 0;
+    } catch (e) {
+      print("ERROR Fetching Stars number !");
+      return Future.error(FetchDataException(
+          'error occurred when fetch GitHub API - Stars number.'));
+    }
+  }
+
+  Future<int> getNbRepos(String url) async {
+    try {
+      Response response = await dio.get(url);
+      print(response.data.runtimeType);
+      return response.data.isNotEmpty ? response.data.length : 0;
+    } catch (e) {
+      print("ERROR Fetching Stars number !");
+      return Future.error(FetchDataException(
+          'error occurred when fetch GitHub API - Stars number.'));
+    }
   }
 }

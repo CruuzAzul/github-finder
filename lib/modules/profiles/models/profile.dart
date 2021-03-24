@@ -10,55 +10,63 @@ class Profile {
     this.avatarUrl,
     this.url,
     this.htmlUrl,
-    this.followersUrl,
-    this.starredUrl,
-    this.reposUrl,
+    this.firstFollowerImage,
+    this.firstFollowerName,
+    this.followersNumber,
+    this.starsNumber,
+    this.reposNumber,
   });
 
   String login;
   String avatarUrl;
   String url;
   String htmlUrl;
-  String followersUrl;
-  String starredUrl;
-  String reposUrl;
+  Future<String> firstFollowerImage;
+  Future<String> firstFollowerName;
+  Future<int> followersNumber;
+  Future<int> starsNumber;
+  Future<int> reposNumber;
 
   factory Profile.fromJson(Map<String, dynamic> json) => Profile(
         login: json["login"],
         avatarUrl: json["avatar_url"],
         url: json["url"],
-        htmlUrl: json["html_url"],
-        followersUrl: json["followers_url"],
-        starredUrl: json["starred_url"],
-        reposUrl: json["repos_url"],
+        firstFollowerImage: json["first_follower_img"],
+        firstFollowerName: json["first_follower_name"],
+        followersNumber: json["nb_followers"],
+        starsNumber: json["nb_stars"],
+        reposNumber: json["nb_repo"],
       );
 
   Map<String, dynamic> toJson() => {
         "login": login,
         "avatar_url": avatarUrl,
         "url": url,
-        "html_url": htmlUrl,
-        "followers_url": followersUrl,
-        "starred_url": starredUrl,
-        "repos_url": reposUrl,
+        "first_follower_img": firstFollowerImage,
+        "first_follower_name": firstFollowerName,
+        "nb_followers": followersNumber,
+        "nb_stars": starsNumber,
+        "nb_repo": reposNumber,
       };
 
   Profile copyWith(
       {int login,
       String avatarUrl,
       String url,
-      String htmlUrl,
-      String followersUrl,
-      String starredUrl,
-      String reposUrl}) {
+      String firstFollowerImage,
+      String firstFollowerName,
+      String followersNumber,
+      String starsNumber,
+      String reposNumber}) {
     return Profile(
       login: login ?? this.login,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       url: url ?? this.url,
-      htmlUrl: htmlUrl ?? this.htmlUrl,
-      followersUrl: followersUrl ?? this.followersUrl,
-      starredUrl: starredUrl ?? this.starredUrl,
-      reposUrl: reposUrl ?? this.reposUrl,
+      firstFollowerImage: firstFollowerImage ?? this.firstFollowerImage,
+      firstFollowerName: firstFollowerName ?? this.firstFollowerName,
+      followersNumber: followersNumber ?? this.followersNumber,
+      starsNumber: starsNumber ?? this.starsNumber,
+      reposNumber: reposNumber ?? this.reposNumber,
     );
   }
 }

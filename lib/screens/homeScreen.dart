@@ -23,48 +23,51 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Column(
-        children: [
-          FormTextField(
-            // profilesRepository: ProfilesRepository(
-            //   text: "coucou",
-            // ),
-          ),
-          Container(
-            child: BlocBuilder<SearchBloc, SearchState>(
-              builder: (context, state) {
-                if (state is SearchInitState) {
-                  return Text(state.text.toString());
-                } else if (state is SearchDataChange) {
-                  return state.text != ""
-                  ? Container(
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.only(left: 30, top: 20),
-                    child: RichText(
-                        text: TextSpan(
-                          text: 'Résultats de recherche pour ',
-                          style: DefaultTextStyle.of(context).style,
-                          children: <TextSpan>[
-                            TextSpan(text: state.text.toString(), style: TextStyle(fontWeight: FontWeight.bold)),
-                            TextSpan(text: ' :'),
-                          ],
-                        )
-                    ),
-                  )
-                  : Text("");
-                }
-              },
+      body: Container(
+        color: Colors.grey[100],
+        child: Column(
+          children: [
+            FormTextField(
+              // profilesRepository: ProfilesRepository(
+              //   text: "coucou",
+              // ),
             ),
-          ),
-          Container(
-            child: BlocProvider(
-              create: (context) => ProfilesBloc(
-                profilesRepository: ProfilesRepository()
-              )..add(FetchProfilesEvent()),
-              child: ProfilesList(),
+            Container(
+              child: BlocBuilder<SearchBloc, SearchState>(
+                builder: (context, state) {
+                  if (state is SearchInitState) {
+                    return Text(state.text.toString());
+                  } else {
+                    return state.text != ""
+                    ? Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(left: 30, top: 20),
+                      child: RichText(
+                          text: TextSpan(
+                            text: 'Résultats de recherche pour ',
+                            style: DefaultTextStyle.of(context).style,
+                            children: <TextSpan>[
+                              TextSpan(text: state.text.toString(), style: TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(text: ' :'),
+                            ],
+                          )
+                      ),
+                    )
+                    : Text("");
+                  }
+                },
+              ),
             ),
-          )
-        ],
+            Container(
+              child: BlocProvider(
+                create: (context) => ProfilesBloc(
+                  profilesRepository: ProfilesRepository()
+                )..add(FetchProfilesEvent()),
+                child: ProfilesList(),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
