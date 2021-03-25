@@ -13,35 +13,46 @@ part 'profiles_state.dart';
 
 class ProfilesBloc extends Bloc<ProfilesEvent, ProfilesState> {
   final ProfilesRepository profilesRepository;
-  // final SearchBloc searchBloc;
-  StreamSubscription searchBlocSubscription;
+  String currentSearch = "";
+  String currentFilter  = "Nothing";
 
-  ProfilesBloc({@required this.profilesRepository, SearchBloc searchBloc}) : super(ProfilesInitialeState()) {
+  StreamSubscription searchBlocSubscription;
+  StreamSubscription filterBlocSubscription;
+
+  ProfilesBloc({@required this.profilesRepository, SearchBloc searchBloc, FiltersBloc filterBloc})
+      : super(ProfilesInitialeState()) {
+
+    filterBlocSubscription = filterBloc.stream.listen((state) { 
+      currentFilter = state.filter;
+      if (searchBloc != null && currentSearch != "") {
+        add(FetchProfilesEvent(searchText: currentSearch, filterText: currentFilter));
+      }
+    });
+
     if (searchBloc != null) {
       searchBlocSubscription = searchBloc.stream.listen((state) {
-        add(FetchProfilesEvent(state.text));
-    });
+        currentSearch = state.text;
+        add(FetchProfilesEvent(searchText: currentSearch, filterText: currentFilter));
+      });
+    }
   }
-}
 
-  // ProfilesBloc({@required this.profilesRepository, SearchBloc searchBloc}) : super(ProfilesFetchInProgressState());
-  
   @override
   Stream<ProfilesState> mapEventToState(
     ProfilesEvent event,
   ) async* {
     if (event is FetchProfilesEvent) {
-      yield* _mapFetchProfilesEventToState(event.searchText);
+      yield* _mapFetchProfilesEventToState(event.searchText, event.filterText);
     }
   }
 
-  Stream<ProfilesState> _mapFetchProfilesEventToState(searchText) async* {
+  Stream<ProfilesState> _mapFetchProfilesEventToState(searchText, filterText) async* {
     try {
       if (searchText == "") {
         yield ProfilesInitialeState();
       } else {
         yield ProfilesFetchInProgressState();
-        final profiles = await this.profilesRepository.getProfiles(searchText);
+        final profiles = await this.profilesRepository.getProfiles(searchText, filterText);
         yield ProfilesFetchSuccessState(profiles: profiles ?? []);
       }
     } catch (e) {
@@ -52,8 +63,12 @@ class ProfilesBloc extends Bloc<ProfilesEvent, ProfilesState> {
   @override
   // ignore: missing_return
   Future<void> close() {
-    if (searchBlocSubscription != null ) {
+    if (searchBlocSubscription != null) {
       searchBlocSubscription.cancel();
+      return super.close();
+    }
+    if (filterBlocSubscription != null) {
+      filterBlocSubscription.cancel();
       return super.close();
     }
   }

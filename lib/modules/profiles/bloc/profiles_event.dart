@@ -9,6 +9,7 @@ abstract class ProfilesEvent {
 
 class FetchProfilesEvent extends ProfilesEvent {
   final String searchText;
+  final String filterText;
 
-  FetchProfilesEvent(this.searchText);
+  FetchProfilesEvent({this.searchText, this.filterText});
 }

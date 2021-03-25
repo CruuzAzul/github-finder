@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:github_search/modules/blocs.dart';
 import 'package:github_search/modules/filters/widgets/dropDown.dart';
 import 'package:github_search/modules/profiles/bloc/profiles_bloc.dart';
 import 'package:github_search/modules/profiles/repositories/profile_repository.dart';
@@ -64,9 +65,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   create: (context) => ProfilesBloc(
                     profilesRepository: ProfilesRepository(
                       searchText: "",
+                      filterText: "Nothing",
                       dio: new Dio(),
                     ),
-                    searchBloc: BlocProvider.of<SearchBloc>(context)
+                    searchBloc: BlocProvider.of<SearchBloc>(context),
+                    filterBloc: BlocProvider.of<FiltersBloc>(context)
                   ),
                   child: ProfilesList(),
                 ),

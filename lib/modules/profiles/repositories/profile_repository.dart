@@ -6,11 +6,13 @@ import 'package:dio/dio.dart';
 @immutable
 class ProfilesRepository {
   final String searchText;
+  final String filterText;
+  String sort;
   final Dio dio;
 
-  ProfilesRepository({@required this.dio, this.searchText}) : assert(dio != null);
+  ProfilesRepository({@required this.dio, this.searchText, this.filterText}) : assert(dio != null);
 
-  Future<List<Profile>> getProfiles(searchText) async {
+  Future<List<Profile>> getProfiles(searchText, filterText) async {
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (RequestOptions options) {
         options.headers["Authorization"] =
@@ -18,9 +20,24 @@ class ProfilesRepository {
         return options;
       },
     ));
+
+    switch (filterText) {
+      case "Creation date":
+        sort = "joined";
+        break;
+      case "Number of repositories":
+        sort = "repositories";
+        break;
+      case "Number of followers":
+        sort = "followers";
+        break;
+      default:
+        sort = "";
+    }
+
     try {
       Response response = await dio.get(
-          'https://api.github.com/search/users?q=$searchText+in:login+in:fullname&type=Users&page=0&per_page=10&sort=score');
+          'https://api.github.com/search/users?q=$searchText+in:login+in:fullname&type=Users&page=0&per_page=10&sort=$sort');
       final parsed = response.data["items"].cast<Map<String, dynamic>>();
       // var dataTest;
       parsed.forEach((elem) => {

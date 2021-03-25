@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:github_search/modules/filters/bloc/filters_bloc.dart';
 import 'package:github_search/screens/HomeScreen.dart';
 
 import 'modules/search/bloc/search_bloc.dart';
@@ -18,8 +19,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: BlocProvider<SearchBloc>(
-        create: (context) => SearchBloc(),
+      home: MultiBlocProvider(providers: [
+        BlocProvider<SearchBloc>(
+          create: (context) => SearchBloc(),
+        ),
+        BlocProvider<FiltersBloc>(
+          create: (context) => FiltersBloc(),
+        )
+      ],
         child: HomeScreen(),
       ),
     );
