@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:github_search/modules/profiles/bloc/profiles_bloc.dart';
@@ -59,7 +60,10 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
                 child: BlocProvider(
                   create: (context) => ProfilesBloc(
-                    profilesRepository: ProfilesRepository(""),
+                    profilesRepository: ProfilesRepository(
+                      searchText: "",
+                      dio: new Dio(),
+                    ),
                     searchBloc: BlocProvider.of<SearchBloc>(context)
                   ),
                   child: ProfilesList(),

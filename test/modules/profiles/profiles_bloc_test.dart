@@ -5,6 +5,7 @@ import 'package:github_search/modules/profiles/exceptions/custom_exceptions.dart
 import 'package:github_search/modules/profiles/repositories/profile_repository.dart';
 import 'package:mockito/mockito.dart';
 
+// ignore: must_be_immutable
 class MockProfilesRepository extends Mock implements ProfilesRepository {}
 
 void main() {

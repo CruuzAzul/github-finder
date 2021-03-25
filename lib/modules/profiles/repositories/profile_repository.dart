@@ -6,10 +6,9 @@ import 'package:dio/dio.dart';
 @immutable
 class ProfilesRepository {
   final String searchText;
-  Dio dio = new Dio();
+  final Dio dio;
 
-  ProfilesRepository(this.searchText);
-  // ProfilesRepository({@required this.text}) : assert(text != null);
+  ProfilesRepository({@required this.dio, this.searchText}) : assert(dio != null);
 
   Future<List<Profile>> getProfiles(searchText) async {
     dio.interceptors.add(InterceptorsWrapper(

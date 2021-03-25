@@ -4,7 +4,6 @@ part of 'profiles_bloc.dart';
 abstract class ProfilesEvent {
   const ProfilesEvent();
 
-  @override
   List<Object> get props => [];
 }
 
