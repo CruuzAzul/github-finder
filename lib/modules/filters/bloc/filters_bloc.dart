@@ -15,7 +15,7 @@ class FiltersBloc extends Bloc<FiltersEvent, FiltersState> {
     FiltersEvent event,
   ) async* {
     if (event is FilterInitEvent) {
-      yield FiltersInitialState(filter: "");
+      yield FiltersInitialState(filter: "Nothing");
     } else if (event is FilterChangeEvent) {
       yield FiltersDataState(filter: event.filterName);
     }
