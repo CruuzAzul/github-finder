@@ -10,15 +10,20 @@ class MockProfilesRepository extends Mock implements ProfilesRepository {}
 
 void main() {
   ProfilesRepository profilesRepository;
+  // ProfilesBloc profilesBloc;
+  // SearchBloc searchBloc
 
   setUp(() {
     profilesRepository = MockProfilesRepository();
+
   });
 
   group('Profiles Bloc Tests', () {
     test('should test initial state', () {
       expect(
-        ProfilesBloc(profilesRepository: profilesRepository).state,
+        ProfilesBloc(
+          profilesRepository: profilesRepository,
+          ).state,
         isA<ProfilesInitialeState>(),
       );
     });
@@ -32,14 +37,14 @@ void main() {
     blocTest(
       'emit [ProfilesInitialeState] when FetchProfilesEvent is called without search', 
       build: () => ProfilesBloc(profilesRepository: profilesRepository),
-      act: (bloc) async => bloc.add(FetchProfilesEvent("")),
+      act: (bloc) async => bloc.add(FetchProfilesEvent(searchText: "", filterText: "Nothing")),
       expect: () => [ProfilesInitialeState()],
     );
 
     blocTest(
       'emit [ProfilesFetchInProgressState,ProfilesFetchSuccessState] when FetchProfilesEvent is called with a search', 
       build: () => ProfilesBloc(profilesRepository: profilesRepository),
-      act: (bloc) async => bloc.add(FetchProfilesEvent("Cruz-A")),
+      act: (bloc) async => bloc.add(FetchProfilesEvent(searchText: "Cruz-A", filterText: "Nothing")),
       expect: () => const <ProfilesState>[
         ProfilesFetchInProgressState(),
         ProfilesFetchSuccessState()
@@ -50,11 +55,12 @@ void main() {
       'emit [ProfilesFetchErrorState] when FetchProfilesEvent is called with error',
       build: () {
         when(
-          profilesRepository.getProfiles("Cruz-A",),
+          profilesRepository.getProfiles("Cruz-A", "Nothing"),
         ).thenAnswer((_) => Future.error(FetchDataException()));
+
         return ProfilesBloc(profilesRepository: profilesRepository);
       },
-      act: (bloc) async => bloc.add(FetchProfilesEvent("Cruz-A")),
+      act: (bloc) async => bloc.add(FetchProfilesEvent(searchText: "Cruz-A", filterText: "Nothing")),
       expect: () => const <ProfilesState>[
         ProfilesFetchInProgressState(),
         ProfilesFetchErrorState(),

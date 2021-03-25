@@ -22,12 +22,14 @@ class ProfilesBloc extends Bloc<ProfilesEvent, ProfilesState> {
   ProfilesBloc({@required this.profilesRepository, SearchBloc searchBloc, FiltersBloc filterBloc})
       : super(ProfilesInitialeState()) {
 
-    filterBlocSubscription = filterBloc.stream.listen((state) { 
-      currentFilter = state.filter;
-      if (searchBloc != null && currentSearch != "") {
-        add(FetchProfilesEvent(searchText: currentSearch, filterText: currentFilter));
-      }
-    });
+    if (filterBloc != null) {
+      filterBlocSubscription = filterBloc.stream.listen((state) { 
+        currentFilter = state.filter;
+        if (searchBloc != null && currentSearch != "") {
+          add(FetchProfilesEvent(searchText: currentSearch, filterText: currentFilter));
+        }
+      });
+    }
 
     if (searchBloc != null) {
       searchBlocSubscription = searchBloc.stream.listen((state) {
