@@ -8,6 +8,18 @@ class ProfilesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageHome = Image.asset(
+      'assets/images/img_home.png',
+      width: 300,
+      fit: BoxFit.fitHeight,
+    );
+
+    final imageError = Image.asset(
+      'assets/images/img_error.png',
+      width: 300,
+      fit: BoxFit.fitHeight,
+    );
+
     return Container(
       child: BlocBuilder<ProfilesBloc, ProfilesState>(
         builder: (context, state) {
@@ -16,10 +28,7 @@ class ProfilesList extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(height: 100),
-                  Image.network(
-                    "https://git-user-assignment.herokuapp.com/images/octocat.png",
-                    width: 300,
-                  ),
+                  imageHome,
                   SizedBox(height: 40),
                   Text(
                     'Enter a name in the search bar to start !',
@@ -36,10 +45,7 @@ class ProfilesList extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(height: 100),
-                  Image.network(
-                    "https://www.pngkey.com/png/detail/442-4423751_github-octocat-png-github-inspectocat-896-github-hack.png",
-                    width: 300,
-                  ),
+                  imageError,
                   SizedBox(height: 40),
                   Text(
                     'An error occurred ! Please retry later !',
@@ -52,8 +58,13 @@ class ProfilesList extends StatelessWidget {
           }
 
           if (state is ProfilesFetchInProgressState) {
-            return Center(
-              child: CircularProgressIndicator(),
+            return Column(
+              children: [
+                SizedBox(height: 200),
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ],
             );
           }
 

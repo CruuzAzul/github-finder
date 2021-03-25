@@ -131,12 +131,16 @@ class ProfileApiCard extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Text(
-                                  snapshot.data[1],
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                      color: Colors.grey[700]),
+                                Container(
+                                  constraints: BoxConstraints(maxWidth: 100),
+                                  child: Text(
+                                    snapshot.data[1],
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                        color: Colors.grey[700]),
+                                    ),
                                 ),
                               ]),
                             if (thirdHasData)
