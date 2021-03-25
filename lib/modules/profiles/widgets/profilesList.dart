@@ -20,6 +20,12 @@ class ProfilesList extends StatelessWidget {
       fit: BoxFit.fitHeight,
     );
 
+    final imageEmpty = Image.asset(
+      'assets/images/img_empty.png',
+      width: 300,
+      fit: BoxFit.fitHeight,
+    );
+
     return Container(
       child: BlocBuilder<ProfilesBloc, ProfilesState>(
         builder: (context, state) {
@@ -70,20 +76,34 @@ class ProfilesList extends StatelessWidget {
 
           final profiles = (state as ProfilesFetchSuccessState).profiles;
 
-          return Flexible(
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: profiles.length,
-              itemBuilder: (_, index) {
-                return Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  child: ProfileApiCard(
-                    profile: profiles[index],
+          return profiles.isNotEmpty
+              ? Flexible(
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: profiles.length,
+                    itemBuilder: (_, index) {
+                      return Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          child: profiles.length != null
+                              ? ProfileApiCard(
+                                  profile: profiles[index],
+                                )
+                              : Text("0"));
+                    },
                   ),
-                );
-              },
-            ),
-          );
+                )
+              : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  SizedBox(height: 100),
+                  imageEmpty,
+                  SizedBox(height: 40),
+                  Text(
+                    'No results found !',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.black),
+                  ),
+                ]);
         },
       ),
     );
