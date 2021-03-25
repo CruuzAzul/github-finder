@@ -50,8 +50,11 @@ class ProfilesBloc extends Bloc<ProfilesEvent, ProfilesState> {
   }
 
   @override
+  // ignore: missing_return
   Future<void> close() {
-    searchBlocSubscription.cancel();
-    return super.close();
+    if (searchBlocSubscription != null ) {
+      searchBlocSubscription.cancel();
+      return super.close();
+    }
   }
 }
