@@ -1,64 +1,55 @@
-import 'dart:convert';
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
-Profile profileFromJson(String str) => Profile.fromJson(json.decode(str));
+import 'repository.dart';
 
-String profileToJson(Profile data) => json.encode(data.toJson());
+@immutable
+class Profile extends Equatable {
+  final String login;
+  final String avatarUrl;
+  final String followersUrl;
+  final String repositoriesUrl;
+  final List<Profile> followers;
+  final List<Repository> repositories;
 
-class Profile {
   Profile({
-    this.login,
-    this.avatarUrl,
-    this.firstFollowerImage,
-    this.firstFollowerName,
-    this.followersNumber,
-    this.starsNumber,
-    this.reposNumber,
-  });
+    @required this.login,
+    @required this.avatarUrl,
+    @required this.followersUrl,
+    @required this.repositoriesUrl,
+    this.followers,
+    this.repositories,
+  })  : assert(login != null),
+        assert(avatarUrl != null);
 
-  String login;
-  String avatarUrl;
-  Future<String> firstFollowerImage;
-  Future<String> firstFollowerName;
-  Future<int> followersNumber;
-  Future<int> starsNumber;
-  Future<int> reposNumber;
+  Profile.fromJson(Map<String, dynamic> json)
+      : this(
+          login: json["login"],
+          avatarUrl: json["avatar_url"],
+          followersUrl: json["followers_url"],
+          repositoriesUrl: json["repos_url"],
+        );
 
-  factory Profile.fromJson(Map<String, dynamic> json) => Profile(
-        login: json["login"],
-        avatarUrl: json["avatar_url"],
-        firstFollowerImage: json["first_follower_img"],
-        firstFollowerName: json["first_follower_name"],
-        followersNumber: json["nb_followers"],
-        starsNumber: json["nb_stars"],
-        reposNumber: json["nb_repo"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "login": login,
-        "avatar_url": avatarUrl,
-        "first_follower_img": firstFollowerImage,
-        "first_follower_name": firstFollowerName,
-        "nb_followers": followersNumber,
-        "nb_stars": starsNumber,
-        "nb_repo": reposNumber,
-      };
-
-  Profile copyWith(
-      {int login,
-      String avatarUrl,
-      String firstFollowerImage,
-      String firstFollowerName,
-      String followersNumber,
-      String starsNumber,
-      String reposNumber}) {
+  Profile copyWith({
+    int login,
+    String avatarUrl,
+    String followersUrl,
+    String repositoriesUrl,
+    List<Profile> followers,
+    List<Repository> repositories,
+  }) {
     return Profile(
       login: login ?? this.login,
       avatarUrl: avatarUrl ?? this.avatarUrl,
-      firstFollowerImage: firstFollowerImage ?? this.firstFollowerImage,
-      firstFollowerName: firstFollowerName ?? this.firstFollowerName,
-      followersNumber: followersNumber ?? this.followersNumber,
-      starsNumber: starsNumber ?? this.starsNumber,
-      reposNumber: reposNumber ?? this.reposNumber,
+      followersUrl: followersUrl ?? this.followersUrl,
+      repositoriesUrl: repositoriesUrl ?? this.repositoriesUrl,
+      followers: followers ?? this.followers,
+      repositories: repositories ?? this.repositories,
     );
   }
+
+  @override
+  List<Object> get props => [login, avatarUrl, followers, repositories];
 }
+
+var test = Profile(login: null);

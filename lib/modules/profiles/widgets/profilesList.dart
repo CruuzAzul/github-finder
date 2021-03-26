@@ -1,43 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:github_search/modules/blocs.dart';
-import 'package:github_search/modules/profiles/bloc/profiles_bloc.dart';
-import 'package:github_search/modules/profiles/widgets/profile_api_card.dart';
+
+import '../blocs/blocs.dart';
+import '../widgets/profile_api_card.dart';
 
 class ProfilesList extends StatelessWidget {
   const ProfilesList({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final imageHome = Image.asset(
-      'assets/images/img_home.png',
-      width: 300,
-      fit: BoxFit.fitHeight,
-    );
-
-    final imageError = Image.asset(
-      'assets/images/img_error.png',
-      width: 300,
-      fit: BoxFit.fitHeight,
-    );
-
-    final imageEmpty = Image.asset(
-      'assets/images/img_empty.png',
-      width: 300,
-      fit: BoxFit.fitHeight,
-    );
-
     return Container(
       child: BlocBuilder<ProfilesBloc, ProfilesState>(
         builder: (context, state) {
           if (state is ProfilesInitialeState) {
-            return imageScreen(
-                imageHome, 'Enter a name in the search bar to start !');
+            return _Status(
+              imageURL: 'assets/images/img_home.png',
+              label: 'Enter a name in the search bar to start !',
+            );
           }
 
           if (state is ProfilesFetchErrorState) {
-            return imageScreen(
-                imageError, 'An error occurred ! Please retry later !');
+            return _Status(
+              imageURL: 'assets/images/img_empty.png',
+              label: 'An error occurred ! Please retry later !',
+            );
           }
 
           if (state is ProfilesFetchInProgressState) {
@@ -53,45 +39,59 @@ class ProfilesList extends StatelessWidget {
 
           final profiles = (state as ProfilesFetchSuccessState).profiles;
 
-          return profiles.isNotEmpty
-              ? Flexible(
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      var currentText =
-                          BlocProvider.of<SearchBloc>(context).state.text;
-                      var currentFilter =
-                          BlocProvider.of<FiltersBloc>(context).state.filter;
-                      context.read<ProfilesBloc>().add(FetchProfilesEvent(
-                          searchText: currentText, filterText: currentFilter));
-                    },
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: profiles.length,
-                      itemBuilder: (_, index) {
-                        return Container(
-                            margin: EdgeInsets.only(bottom: 10),
-                            child: profiles.length != null
-                                ? ProfileApiCard(
-                                    profile: profiles[index],
-                                  )
-                                : Text(""));
-                      },
-                    ),
-                  ),
-                )
-              : imageScreen(imageEmpty, 'No results found !');
+          if (profiles.isEmpty) {
+            return _Status(
+              imageURL: 'assets/images/img_empty.png',
+              label: 'No results found !',
+            );
+          }
+
+          return Flexible(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                context.read<ProfilesBloc>().add(
+                      FetchProfilesEvent(
+                        searchText: context.read<SearchBloc>().state.text,
+                        sort: context.read<FiltersBloc>().state.filter,
+                      ),
+                    );
+              },
+              child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: profiles.length,
+                itemBuilder: (_, index) {
+                  return Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: ProfileApiCard(
+                        key: Key(profiles[index].login),
+                        profile: profiles[index],
+                      ));
+                },
+              ),
+            ),
+          );
         },
       ),
     );
   }
+}
 
-  Widget imageScreen(Image image, String text) {
+class _Status extends StatelessWidget {
+  final String imageURL;
+  final String label;
+
+  _Status({this.imageURL, this.label})
+      : assert(imageURL != null),
+        assert(label != null);
+
+  @override
+  Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       SizedBox(height: 100),
-      image,
+      Image.asset(imageURL),
       SizedBox(height: 40),
       Text(
-        text,
+        label,
         style: TextStyle(
             fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
       ),

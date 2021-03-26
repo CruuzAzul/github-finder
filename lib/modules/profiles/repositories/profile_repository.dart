@@ -1,129 +1,74 @@
-import 'package:github_search/modules/profiles/exceptions/custom_exceptions.dart';
-import 'package:github_search/modules/profiles/models/profile.dart';
-import 'package:meta/meta.dart';
 import 'package:dio/dio.dart';
+import 'package:meta/meta.dart';
+
+import '../exceptions/custom_exceptions.dart';
+import '../models/profile.dart';
+import '../models/profile_sort.dart';
+import '../models/repository.dart';
 
 @immutable
 class ProfilesRepository {
-  final String searchText;
-  final String filterText;
-  String sort;
   final Dio dio;
 
-  ProfilesRepository({@required this.dio, this.searchText, this.filterText}) : assert(dio != null);
+  ProfilesRepository({
+    @required this.dio,
+  }) : assert(dio != null);
 
-  Future<List<Profile>> getProfiles(searchText, filterText) async {
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (RequestOptions options) {
-        options.headers["Authorization"] =
-            "token " + "";
-        return options;
-      },
-    ));
-
-    switch (filterText) {
-      case "Creation date":
-        sort = "joined";
-        break;
-      case "Number of repositories":
-        sort = "repositories";
-        break;
-      case "Number of followers":
-        sort = "followers";
-        break;
-      default:
-        sort = "";
-    }
-
+  Future<List<Profile>> fetchProfiles({
+    String searchText = '',
+    ProfileSort sort,
+  }) async {
     try {
       Response response = await dio.get(
-          'https://api.github.com/search/users?q=$searchText+in:login+in:fullname&type=Users&page=0&per_page=10&sort=$sort');
+        'https://api.github.com/search/users?q=$searchText+in:login+in:fullname&type=Users&page=0&per_page=10&sort=${sort.profileSortToString()}',
+      );
+
       final parsed = response.data["items"].cast<Map<String, dynamic>>();
-      // var dataTest;
-      parsed.forEach((elem) => {
-            // dataTest = getData(elem["followers_url"]),
-            elem["first_follower_img"] = getImgFollower(elem["followers_url"]),
-            elem["first_follower_name"] =
-                getNameFollower(elem["followers_url"]),
-            elem["nb_followers"] = getNbFollowers(elem["followers_url"]),
-            elem["nb_stars"] = getNbStars(elem["repos_url"]),
-            elem["nb_repo"] = getNbRepos(elem["repos_url"]),
-          });
-      return (parsed.map<Profile>((json) => Profile.fromJson(json)).toList());
+
+      return parsed.map<Profile>((json) => Profile.fromJson(json)).toList();
     } catch (e) {
-      print("ERROR Fetching data !!");
       return Future.error(
           FetchDataException('error occurred when fetch GitHub API.'));
     }
   }
 
-  // Future<String> getData(String url) async {
-  //   try {
-  //     Response response = await dio.get(url);
-  //     return response.data.isNotEmpty
-  //     ? response.data.cast<Map<String, dynamic>>()
-  //     : "";
-  //   } catch (e) {
-  //     print("ERROR !");
-  //     return Future.error(FetchDataException(
-  //         'error occurred when fetch GitHub API - First follower image.'));
-  //   }
-  // }
+  Future<Profile> fetchAdditionalData(Profile profile) async {
+    final additionalData = await Future.wait([
+      fetchFollowers(profile.followersUrl),
+      fetchRepositories(profile.repositoriesUrl),
+    ]);
 
-  Future<String> getImgFollower(String url) async {
+    return profile.copyWith(
+      followers: additionalData[0] as List<Profile>,
+      repositories: additionalData[1] as List<Repository>,
+    );
+  }
+
+  Future<List<Profile>> fetchFollowers(String url) async {
     try {
       Response response = await dio.get(url);
-      return response.data.isNotEmpty ? response.data[0]["avatar_url"] : "";
+      final parsed = response.data.cast<Map<String, dynamic>>();
+
+      return parsed.map<Profile>((json) => Profile.fromJson(json)).toList();
     } catch (e) {
-      print("ERROR Fetching Image first Follower!");
-      return Future.error(FetchDataException(
-          'error occurred when fetch GitHub API - First follower image.'));
+      return Future.error(
+        FetchDataException('An error occurred when fetching followers'),
+      );
     }
   }
 
-  Future<String> getNameFollower(String url) async {
+  Future<List<Repository>> fetchRepositories(String url) async {
     try {
       Response response = await dio.get(url);
-      return response.data.isNotEmpty ? response.data[0]["login"] : "";
-    } catch (e) {
-      print("ERROR Fetching Name first Follower!");
-      return Future.error(FetchDataException(
-          'error occurred when fetch GitHub API - First follower name.'));
-    }
-  }
+      final parsed = response.data.cast<Map<String, dynamic>>();
 
-  Future<int> getNbFollowers(String url) async {
-    try {
-      Response response = await dio.get(url);
-      return response.data.isNotEmpty ? response.data.length - 1 : 0;
+      return parsed
+          .map<Repository>((json) => Repository.fromJson(json))
+          .toList();
     } catch (e) {
-      print("ERROR Fetching Followers number !");
-      return Future.error(FetchDataException(
-          'error occurred when fetch GitHub API - Followers number.'));
-    }
-  }
-
-  Future<int> getNbStars(String url) async {
-    try {
-      Response response = await dio.get(url);
-      var counter = 0;
-      response.data.forEach((elem) => {counter += elem["stargazers_count"]});
-      return response.data.isNotEmpty ? counter : 0;
-    } catch (e) {
-      print("ERROR Fetching Stars number !");
-      return Future.error(FetchDataException(
-          'error occurred when fetch GitHub API - Stars number.'));
-    }
-  }
-
-  Future<int> getNbRepos(String url) async {
-    try {
-      Response response = await dio.get(url);
-      return response.data.isNotEmpty ? response.data.length : 0;
-    } catch (e) {
-      print("ERROR Fetching Stars number !");
-      return Future.error(FetchDataException(
-          'error occurred when fetch GitHub API - Stars number.'));
+      return Future.error(
+        FetchDataException('An error occurred when fetching repositories'),
+      );
     }
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:github_search/modules/profiles/models/profile.dart';
+
+import '../models/profile.dart';
+import '../widgets/display_followers.dart';
+import '../widgets/display_repository.dart';
 
 class ProfileApiCard extends StatelessWidget {
   final Profile profile;
@@ -7,14 +10,14 @@ class ProfileApiCard extends StatelessWidget {
   const ProfileApiCard({
     Key key,
     @required this.profile,
-  }) : super(key: key);
+  })  : assert(profile != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 130,
       padding: const EdgeInsets.all(10),
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -27,28 +30,11 @@ class ProfileApiCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            margin: EdgeInsets.only(left: 10, right: 30),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Image.network(
-                  profile.avatarUrl,
-                )),
-            width: 70,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.6),
-                  blurRadius: 5,
-                ),
-              ],
-            ),
-          ),
+          AvatarImage(urlImage: profile.avatarUrl),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
                   profile.login,
@@ -57,8 +43,28 @@ class ProfileApiCard extends StatelessWidget {
                       fontSize: 17,
                       color: Colors.grey[700]),
                 ),
-                dataRepository(),
-                dataFollowers(),
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  height: 20,
+                  child: profile.followers != null
+                      ? DisplayFollowers(
+                          profiles: profile.followers,
+                        )
+                      : SizedBox.expand(),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  height: 15,
+                  child: profile.repositories != null
+                      ? DisplayRepositories(
+                          repositories: profile.repositories,
+                        )
+                      : SizedBox.expand(),
+                ),
               ],
             ),
           ),
@@ -66,105 +72,37 @@ class ProfileApiCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget dataRepository() {
-    return FutureBuilder(
-      future: Future.wait([profile.starsNumber, profile.reposNumber]),
-      builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if (snapshot.data != null && snapshot.data.isNotEmpty) {
-          var firstHasData = snapshot.data[0] != null && snapshot.data[0] != 0;
-          var secondHasData = snapshot.data[1] != null && snapshot.data[1] != 0;
-          return Row(
-            children: [
-              if (firstHasData)
-                Row(children: [
-                  Icon(Icons.star, color: Colors.amber),
-                  Text(snapshot.data[0].toString(),
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[500])),
-                ]),
-              if (firstHasData && secondHasData) Text(" - "),
-              if (secondHasData)
-                Row(children: [
-                  Icon(Icons.book, color: Colors.amber),
-                  Text(snapshot.data[1].toString() + " repositories",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[500])),
-                ]),
-              Text("")
-            ],
-          );
-        } else {
-          return Text("");
-        }
-      },
-    );
-  }
+class AvatarImage extends StatelessWidget {
+  const AvatarImage({
+    Key key,
+    @required this.urlImage,
+  })  : assert(urlImage != null),
+        super(key: key);
 
-  Widget dataFollowers() {
-    return FutureBuilder(
-      future: Future.wait([
-        profile.firstFollowerImage,
-        profile.firstFollowerName,
-        profile.followersNumber
-      ]),
-      builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if (snapshot.data != null && snapshot.data.isNotEmpty) {
-          var firstHasData =
-              snapshot.data[0] != null && snapshot.data[0].isNotEmpty;
-          var secondHasData = snapshot.data[1] != null && snapshot.data[1] != 0;
-          var thirdHasData = snapshot.data[2] != null && snapshot.data[2] != 0;
-          if (firstHasData && secondHasData)
-            return Row(
-              children: [
-                if (firstHasData && secondHasData)
-                  Row(children: [
-                    Text(
-                      " Followers :",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Colors.amber),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8, right: 5),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: Image.network(
-                          snapshot.data[0],
-                          width: 25,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      constraints: BoxConstraints(maxWidth: 100),
-                      child: Text(
-                        snapshot.data[1],
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: Colors.grey[700]),
-                      ),
-                    ),
-                  ]),
-                if (thirdHasData)
-                  Text(
-                    " + " + snapshot.data[2].toString(),
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.grey[700]),
-                  ),
-              ],
-            );
-          return Text("");
-        } else {
-          return Text("");
-        }
-      },
+  final String urlImage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(left: 10, right: 30),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(100),
+        child: Image.network(
+          urlImage,
+        ),
+      ),
+      width: 70,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.6),
+            blurRadius: 5,
+          ),
+        ],
+      ),
     );
   }
 }
