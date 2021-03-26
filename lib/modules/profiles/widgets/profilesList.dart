@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:github_search/modules/blocs.dart';
 import 'package:github_search/modules/profiles/bloc/profiles_bloc.dart';
 import 'package:github_search/modules/profiles/widgets/profile_api_card.dart';
 
@@ -78,18 +79,25 @@ class ProfilesList extends StatelessWidget {
 
           return profiles.isNotEmpty
               ? Flexible(
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: profiles.length,
-                    itemBuilder: (_, index) {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 10),
-                          child: profiles.length != null
-                              ? ProfileApiCard(
-                                  profile: profiles[index],
-                                )
-                              : Text("0"));
-                    },
+                  child: RefreshIndicator(
+                      onRefresh: () async {
+                        var currentText = BlocProvider.of<SearchBloc>(context).state.text;
+                        var currentFilter = BlocProvider.of<FiltersBloc>(context).state.filter;
+                        context.read<ProfilesBloc>().add(FetchProfilesEvent(searchText: currentText, filterText: currentFilter));
+                      },
+                      child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: profiles.length,
+                      itemBuilder: (_, index) {
+                        return Container(
+                            margin: EdgeInsets.only(bottom: 10),
+                            child: profiles.length != null
+                                ? ProfileApiCard(
+                                    profile: profiles[index],
+                                  )
+                                : Text(""));
+                      },
+                    ),
                   ),
                 )
               : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
