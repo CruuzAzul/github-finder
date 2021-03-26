@@ -31,37 +31,13 @@ class ProfilesList extends StatelessWidget {
       child: BlocBuilder<ProfilesBloc, ProfilesState>(
         builder: (context, state) {
           if (state is ProfilesInitialeState) {
-            return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 100),
-                  imageHome,
-                  SizedBox(height: 40),
-                  Text(
-                    'Enter a name in the search bar to start !',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.black),
-                  ),
-                ]);
+            return imageScreen(
+                imageHome, 'Enter a name in the search bar to start !');
           }
 
           if (state is ProfilesFetchErrorState) {
-            return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 100),
-                  imageError,
-                  SizedBox(height: 40),
-                  Text(
-                    'An error occurred ! Please retry later !',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.black),
-                  ),
-                ]);
+            return imageScreen(
+                imageError, 'An error occurred ! Please retry later !');
           }
 
           if (state is ProfilesFetchInProgressState) {
@@ -80,12 +56,15 @@ class ProfilesList extends StatelessWidget {
           return profiles.isNotEmpty
               ? Flexible(
                   child: RefreshIndicator(
-                      onRefresh: () async {
-                        var currentText = BlocProvider.of<SearchBloc>(context).state.text;
-                        var currentFilter = BlocProvider.of<FiltersBloc>(context).state.filter;
-                        context.read<ProfilesBloc>().add(FetchProfilesEvent(searchText: currentText, filterText: currentFilter));
-                      },
-                      child: ListView.builder(
+                    onRefresh: () async {
+                      var currentText =
+                          BlocProvider.of<SearchBloc>(context).state.text;
+                      var currentFilter =
+                          BlocProvider.of<FiltersBloc>(context).state.filter;
+                      context.read<ProfilesBloc>().add(FetchProfilesEvent(
+                          searchText: currentText, filterText: currentFilter));
+                    },
+                    child: ListView.builder(
                       scrollDirection: Axis.vertical,
                       itemCount: profiles.length,
                       itemBuilder: (_, index) {
@@ -100,20 +79,22 @@ class ProfilesList extends StatelessWidget {
                     ),
                   ),
                 )
-              : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  SizedBox(height: 100),
-                  imageEmpty,
-                  SizedBox(height: 40),
-                  Text(
-                    'No results found !',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.black),
-                  ),
-                ]);
+              : imageScreen(imageEmpty, 'No results found !');
         },
       ),
     );
+  }
+
+  Widget imageScreen(Image image, String text) {
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      SizedBox(height: 100),
+      image,
+      SizedBox(height: 40),
+      Text(
+        text,
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
+      ),
+    ]);
   }
 }
