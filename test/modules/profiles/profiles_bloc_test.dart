@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:github_search/modules/blocs.dart';
+import 'package:github_search/modules/profiles/bloc/blocs.dart';
 import 'package:github_search/modules/profiles/exceptions/custom_exceptions.dart';
 import 'package:github_search/modules/profiles/repositories/profile_repository.dart';
 import 'package:mockito/mockito.dart';
@@ -15,7 +15,6 @@ void main() {
 
   setUp(() {
     profilesRepository = MockProfilesRepository();
-
   });
 
   group('Profiles Bloc Tests', () {
@@ -23,7 +22,7 @@ void main() {
       expect(
         ProfilesBloc(
           profilesRepository: profilesRepository,
-          ).state,
+        ).state,
         isA<ProfilesInitialeState>(),
       );
     });
@@ -35,16 +34,18 @@ void main() {
     );
 
     blocTest(
-      'emit [ProfilesInitialeState] when FetchProfilesEvent is called without search', 
+      'emit [ProfilesInitialeState] when FetchProfilesEvent is called without search',
       build: () => ProfilesBloc(profilesRepository: profilesRepository),
-      act: (bloc) async => bloc.add(FetchProfilesEvent(searchText: "", filterText: "Nothing")),
+      act: (bloc) async =>
+          bloc.add(FetchProfilesEvent(searchText: "", filterText: "Nothing")),
       expect: () => [ProfilesInitialeState()],
     );
 
     blocTest(
-      'emit [ProfilesFetchInProgressState,ProfilesFetchSuccessState] when FetchProfilesEvent is called with a search', 
+      'emit [ProfilesFetchInProgressState,ProfilesFetchSuccessState] when FetchProfilesEvent is called with a search',
       build: () => ProfilesBloc(profilesRepository: profilesRepository),
-      act: (bloc) async => bloc.add(FetchProfilesEvent(searchText: "Cruz-A", filterText: "Nothing")),
+      act: (bloc) async => bloc
+          .add(FetchProfilesEvent(searchText: "Cruz-A", filterText: "Nothing")),
       expect: () => const <ProfilesState>[
         ProfilesFetchInProgressState(),
         ProfilesFetchSuccessState()
@@ -55,12 +56,14 @@ void main() {
       'emit [ProfilesFetchErrorState] when FetchProfilesEvent is called with error',
       build: () {
         when(
-          profilesRepository.getProfiles("Cruz-A", "Nothing"),
+          profilesRepository.fetchProfiles(
+              searchText: "Cruz-A", filterText: "Nothing"),
         ).thenAnswer((_) => Future.error(FetchDataException()));
 
         return ProfilesBloc(profilesRepository: profilesRepository);
       },
-      act: (bloc) async => bloc.add(FetchProfilesEvent(searchText: "Cruz-A", filterText: "Nothing")),
+      act: (bloc) async => bloc
+          .add(FetchProfilesEvent(searchText: "Cruz-A", filterText: "Nothing")),
       expect: () => const <ProfilesState>[
         ProfilesFetchInProgressState(),
         ProfilesFetchErrorState(),

@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:github_search/main.dart';
-import 'package:github_search/modules/search/widgets/formTextField.dart';
+import 'package:github_search/modules/profiles/widgets/formTextField.dart';
 
 void main() {
   group('Screens and widgets display test', () {
@@ -10,7 +9,7 @@ void main() {
       await tester.pumpWidget(MyApp());
       await tester.pumpAndSettle();
 
-      var formField = find.byType(FormTextField);
+      var formField = find.byType(SearchField);
 
       expect(formField, findsOneWidget);
     });

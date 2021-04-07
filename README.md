@@ -1,16 +1,18 @@
 # github_search
 
-A new Flutter project.
+This Flutter sample application use Github API
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To use Github API, a github token is required. 
 
-A few resources to get you started if this is your first Flutter project:
+- Create a [Github token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+  
+:point_right: **only `public_repo` is required**
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- Use Github token to run the application
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```shell
+flutter run --dart-define=GITHUB_TOKEN=<YOUR_TOKEN>
+```
+

@@ -1,22 +1,18 @@
 part of 'filters_bloc.dart';
 
 abstract class FiltersState extends Equatable {
-  const FiltersState({
-    this.filter = "Nothing"
-  });
-  
-  final String filter;
+  final ProfileSort filter;
+
+  const FiltersState({this.filter});
 
   @override
   List<Object> get props => [filter];
 }
 
 class FiltersInitialState extends FiltersState {
-  final String filter;
-  FiltersInitialState({this.filter});
+  FiltersInitialState() : super(filter: ProfileSort.nothing);
 }
 
 class FiltersDataState extends FiltersState {
-  final String filter;
-  FiltersDataState({this.filter});
+  FiltersDataState({ProfileSort filter}) : super(filter: filter);
 }

@@ -19,7 +19,10 @@ class ProfilesFetchInProgressState extends ProfilesState {
 class ProfilesFetchSuccessState extends ProfilesState {
   final List<Profile> profiles;
 
-  const ProfilesFetchSuccessState({this.profiles = const []});
+  const ProfilesFetchSuccessState({this.profiles});
+
+  @override
+  List<Object> get props => [profiles];
 }
 
 class ProfilesFetchErrorState extends ProfilesState {
