@@ -4,6 +4,7 @@ import 'package:github_search/modules/profiles/blocs/filters/filters_bloc.dart';
 import 'package:github_search/modules/profiles/blocs/profiles/profiles_bloc.dart';
 import 'package:github_search/modules/profiles/blocs/search/search_bloc.dart';
 import 'package:github_search/modules/profiles/exceptions/custom_exceptions.dart';
+import 'package:github_search/modules/profiles/models/profile.dart';
 import 'package:github_search/modules/profiles/models/profile_sort.dart';
 import 'package:github_search/modules/profiles/repositories/profile_repository.dart';
 import 'package:mockito/mockito.dart';
@@ -19,6 +20,12 @@ void main() {
   late ProfilesRepository profilesRepository;
   final searchBloc = SearchBloc();
   final filtersBloc = FiltersBloc();
+  // final test = new Profile(
+  //     login: "test",
+  //     avatarUrl: "test",
+  //     followersUrl: "test",
+  //     repositoriesUrl: "test");
+  // final List<Profile> testList = [test];
 
   setUp(() {
     profilesRepository = MockProfilesRepository();
@@ -70,6 +77,17 @@ void main() {
         ProfilesFetchSuccessState()
       ],
     );
+
+    // blocTest(
+    //   'emit [ProfilesFetchSuccessState] when FetchProfilesAdditionalDataEvent is called with a search',
+    //   build: () => ProfilesBloc(
+    //       profilesRepository: profilesRepository,
+    //       filtersBloc: filtersBloc,
+    //       searchBloc: searchBloc),
+    //   act: (dynamic bloc) async =>
+    //       bloc.add(FetchProfilesAdditionalDataEvent(profiles: testList)),
+    //   expect: () => [ProfilesFetchSuccessState],
+    // );
 
     blocTest(
       'emit [ProfilesFetchErrorState] when FetchProfilesEvent is called with error',
