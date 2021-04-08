@@ -20,14 +20,14 @@ void main() {
     blocTest(
       'emit [SearchInit] when SearchInit is called',
       build: () => SearchBloc(),
-      act: (bloc) async => bloc.add(SearchInit()),
+      act: (dynamic bloc) async => bloc.add(SearchInit()),
       expect: () => [SearchInitState(text: "")],
     );
 
     blocTest(
       'emit [SearchChange] when SearchInit is called',
       build: () => SearchBloc(),
-      act: (bloc) async => bloc.add(SearchChange(data: "test_txt")),
+      act: (dynamic bloc) async => bloc.add(SearchChange(data: "test_txt")),
       expect: () => [SearchDataChange(text: "test_txt")],
     );
   });

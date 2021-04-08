@@ -8,8 +8,8 @@ abstract class ProfilesEvent {
 }
 
 class FetchProfilesEvent extends ProfilesEvent {
-  final String searchText;
-  final ProfileSort sort;
+  final String? searchText;
+  final ProfileSort? sort;
 
   FetchProfilesEvent({this.searchText, this.sort});
 }
@@ -17,5 +17,5 @@ class FetchProfilesEvent extends ProfilesEvent {
 class FetchProfilesAdditionalDataEvent extends ProfilesEvent {
   final List<Profile> profiles;
 
-  FetchProfilesAdditionalDataEvent({@required this.profiles});
+  FetchProfilesAdditionalDataEvent({required this.profiles});
 }

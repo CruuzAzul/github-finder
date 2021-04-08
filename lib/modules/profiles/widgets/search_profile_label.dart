@@ -5,7 +5,7 @@ import '../blocs/blocs.dart';
 
 class SearchProfileLabel extends StatelessWidget {
   const SearchProfileLabel({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

@@ -5,7 +5,7 @@ abstract class ProfilesState extends Equatable {
   const ProfilesState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class ProfilesInitialeState extends ProfilesState {
@@ -17,12 +17,12 @@ class ProfilesFetchInProgressState extends ProfilesState {
 }
 
 class ProfilesFetchSuccessState extends ProfilesState {
-  final List<Profile> profiles;
+  final List<Profile>? profiles;
 
   const ProfilesFetchSuccessState({this.profiles});
 
   @override
-  List<Object> get props => [profiles];
+  List<Object?> get props => [profiles];
 }
 
 class ProfilesFetchErrorState extends ProfilesState {

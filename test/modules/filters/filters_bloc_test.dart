@@ -22,14 +22,14 @@ void main() {
     blocTest(
       'emit [FiltersInitialState] when FilterInitEvent is called',
       build: () => FiltersBloc(),
-      act: (bloc) async => bloc.add(FilterInitEvent()),
+      act: (dynamic bloc) async => bloc.add(FilterInitEvent()),
       expect: () => [FiltersInitialState()],
     );
 
     blocTest(
       'emit [SearchChange] when FilterChangeEvent is called',
       build: () => FiltersBloc(),
-      act: (bloc) async => bloc.add(FilterChangeEvent(filterName: ProfileSort.nothing)),
+      act: (dynamic bloc) async => bloc.add(FilterChangeEvent(filterName: ProfileSort.nothing)),
       expect: () => [FiltersDataState(filter: ProfileSort.nothing)],
     );
   });

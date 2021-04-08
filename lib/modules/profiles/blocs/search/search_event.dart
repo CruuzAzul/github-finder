@@ -11,5 +11,5 @@ class SearchInit extends SearchEvent {}
 
 class SearchChange extends SearchEvent {
   final String data;
-  SearchChange({@required this.data});
+  SearchChange({required this.data});
 }

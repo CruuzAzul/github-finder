@@ -10,6 +10,6 @@ abstract class FiltersEvent extends Equatable {
 class FilterInitEvent extends FiltersEvent {}
 
 class FilterChangeEvent extends FiltersEvent {
-  final ProfileSort filterName;
-  FilterChangeEvent({@required this.filterName});
+  final ProfileSort? filterName;
+  FilterChangeEvent({required this.filterName});
 }

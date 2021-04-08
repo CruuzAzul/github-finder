@@ -16,7 +16,7 @@ class MockSearchBloc extends Mock implements SearchBloc {}
 class MockFiltersBloc extends Mock implements FiltersBloc {}
 
 void main() {
-  ProfilesRepository profilesRepository;
+  late ProfilesRepository profilesRepository;
   final searchBloc = SearchBloc();
   final filtersBloc = FiltersBloc();
 
@@ -52,7 +52,7 @@ void main() {
           profilesRepository: profilesRepository,
           filtersBloc: filtersBloc,
           searchBloc: searchBloc),
-      act: (bloc) async => bloc
+      act: (dynamic bloc) async => bloc
           .add(FetchProfilesEvent(searchText: "", sort: ProfileSort.nothing)),
       expect: () => [ProfilesInitialeState()],
     );
@@ -63,7 +63,7 @@ void main() {
           profilesRepository: profilesRepository,
           filtersBloc: filtersBloc,
           searchBloc: searchBloc),
-      act: (bloc) async => bloc.add(
+      act: (dynamic bloc) async => bloc.add(
           FetchProfilesEvent(searchText: "Cruz-A", sort: ProfileSort.nothing)),
       expect: () => const <ProfilesState>[
         ProfilesFetchInProgressState(),
@@ -84,7 +84,7 @@ void main() {
             filtersBloc: filtersBloc,
             searchBloc: searchBloc);
       },
-      act: (bloc) async => bloc.add(
+      act: (dynamic bloc) async => bloc.add(
           FetchProfilesEvent(searchText: "Cruz-A", sort: ProfileSort.nothing)),
       expect: () => const <ProfilesState>[
         ProfilesFetchInProgressState(),

@@ -5,7 +5,7 @@ import '../blocs/blocs.dart';
 import '../widgets/profile_api_card.dart';
 
 class ProfilesList extends StatelessWidget {
-  const ProfilesList({Key key}) : super(key: key);
+  const ProfilesList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class ProfilesList extends StatelessWidget {
             );
           }
 
-          final profiles = (state as ProfilesFetchSuccessState).profiles;
+          final profiles = (state as ProfilesFetchSuccessState).profiles!;
 
           if (profiles.isEmpty) {
             return _Status(
@@ -80,9 +80,7 @@ class _Status extends StatelessWidget {
   final String imageURL;
   final String label;
 
-  _Status({this.imageURL, this.label})
-      : assert(imageURL != null),
-        assert(label != null);
+  _Status({required this.imageURL, required this.label});
 
   @override
   Widget build(BuildContext context) {

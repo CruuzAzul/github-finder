@@ -7,20 +7,19 @@ import 'repository.dart';
 class Profile extends Equatable {
   final String login;
   final String avatarUrl;
-  final String followersUrl;
-  final String repositoriesUrl;
-  final List<Profile> followers;
-  final List<Repository> repositories;
+  final String? followersUrl;
+  final String? repositoriesUrl;
+  final List<Profile>? followers;
+  final List<Repository>? repositories;
 
   Profile({
-    @required this.login,
-    @required this.avatarUrl,
-    @required this.followersUrl,
-    @required this.repositoriesUrl,
+    required this.login,
+    required this.avatarUrl,
+    required this.followersUrl,
+    required this.repositoriesUrl,
     this.followers,
     this.repositories,
-  })  : assert(login != null),
-        assert(avatarUrl != null);
+  });
 
   Profile.fromJson(Map<String, dynamic> json)
       : this(
@@ -31,15 +30,15 @@ class Profile extends Equatable {
         );
 
   Profile copyWith({
-    int login,
-    String avatarUrl,
-    String followersUrl,
-    String repositoriesUrl,
-    List<Profile> followers,
-    List<Repository> repositories,
+    int? login,
+    String? avatarUrl,
+    String? followersUrl,
+    String? repositoriesUrl,
+    List<Profile>? followers,
+    List<Repository>? repositories,
   }) {
     return Profile(
-      login: login ?? this.login,
+      login: login as String? ?? this.login,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       followersUrl: followersUrl ?? this.followersUrl,
       repositoriesUrl: repositoriesUrl ?? this.repositoriesUrl,
@@ -49,5 +48,5 @@ class Profile extends Equatable {
   }
 
   @override
-  List<Object> get props => [login, avatarUrl, followers, repositories];
+  List<Object?> get props => [login, avatarUrl, followers, repositories];
 }

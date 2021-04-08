@@ -11,12 +11,12 @@ class ProfilesRepository {
   final Dio dio;
 
   ProfilesRepository({
-    @required this.dio,
-  }) : assert(dio != null);
+    required this.dio,
+  });
 
-  Future<List<Profile>> fetchProfiles({
-    String searchText = '',
-    ProfileSort sort,
+  Future<List<Profile>?> fetchProfiles({
+    String? searchText = '',
+    ProfileSort? sort,
   }) async {
     try {
       Response response = await dio.get(
@@ -34,17 +34,17 @@ class ProfilesRepository {
 
   Future<Profile> fetchAdditionalData(Profile profile) async {
     final additionalData = await Future.wait([
-      fetchFollowers(profile.followersUrl),
-      fetchRepositories(profile.repositoriesUrl),
+      fetchFollowers(profile.followersUrl!),
+      fetchRepositories(profile.repositoriesUrl!),
     ]);
 
     return profile.copyWith(
-      followers: additionalData[0] as List<Profile>,
-      repositories: additionalData[1] as List<Repository>,
+      followers: additionalData[0] as List<Profile>?,
+      repositories: additionalData[1] as List<Repository>?,
     );
   }
 
-  Future<List<Profile>> fetchFollowers(String url) async {
+  Future<List<Profile>?> fetchFollowers(String url) async {
     try {
       Response response = await dio.get(url);
       final parsed = response.data.cast<Map<String, dynamic>>();
@@ -57,7 +57,7 @@ class ProfilesRepository {
     }
   }
 
-  Future<List<Repository>> fetchRepositories(String url) async {
+  Future<List<Repository>?> fetchRepositories(String url) async {
     try {
       Response response = await dio.get(url);
       final parsed = response.data.cast<Map<String, dynamic>>();

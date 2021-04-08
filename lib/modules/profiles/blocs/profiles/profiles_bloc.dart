@@ -19,8 +19,8 @@ class ProfilesBloc extends Bloc<ProfilesEvent, ProfilesState> {
   final SearchBloc searchBloc;
   final FiltersBloc filtersBloc;
 
-  StreamSubscription searchBlocSubscription;
-  StreamSubscription filterBlocSubscription;
+  StreamSubscription? searchBlocSubscription;
+  StreamSubscription? filterBlocSubscription;
 
   void _handleListeningBlocs(_) {
     add(
@@ -32,13 +32,10 @@ class ProfilesBloc extends Bloc<ProfilesEvent, ProfilesState> {
   }
 
   ProfilesBloc({
-    @required this.profilesRepository,
-    @required this.searchBloc,
-    @required this.filtersBloc,
-  })  : assert(profilesRepository != null),
-        assert(searchBloc != null),
-        assert(filtersBloc != null),
-        super(ProfilesInitialeState()) {
+    required this.profilesRepository,
+    required this.searchBloc,
+    required this.filtersBloc,
+  })  : super(ProfilesInitialeState()) {
     filterBlocSubscription = filtersBloc.stream.listen(_handleListeningBlocs);
     searchBlocSubscription = searchBloc.stream.listen(_handleListeningBlocs);
   }
@@ -60,7 +57,7 @@ class ProfilesBloc extends Bloc<ProfilesEvent, ProfilesState> {
     final nextState = change.nextState;
 
     if (nextState is ProfilesFetchSuccessState) {
-      final profileToUpdate = nextState.profiles
+      final profileToUpdate = nextState.profiles!
           .where((profile) =>
               profile.repositories == null && profile.followers == null)
           .toList();
@@ -93,7 +90,7 @@ class ProfilesBloc extends Bloc<ProfilesEvent, ProfilesState> {
   }
 
   Stream<ProfilesState> _mapFetchProfilesEventToState(
-      String searchText, ProfileSort sort) async* {
+      String? searchText, ProfileSort? sort) async* {
         print("Je suis dans la fonction toState");
         print(searchText);
         print(sort);

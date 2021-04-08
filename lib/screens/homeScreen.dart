@@ -9,9 +9,8 @@ final filterBloc = FiltersBloc();
 class HomeScreen extends StatelessWidget {
   final Dio dio;
 
-  HomeScreen({Key key, @required this.dio})
-      : assert(dio != null),
-        super(key: key);
+  HomeScreen({Key? key, required this.dio})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,6 @@ class HomeScreen extends StatelessWidget {
           BlocProvider(
             create: (context) => ProfilesBloc(
               profilesRepository: ProfilesRepository(
-                // TODO: manage once at application startup => Maybe introduce get_it to Mickael
                 dio: dio,
               ),
               searchBloc: searchBloc,

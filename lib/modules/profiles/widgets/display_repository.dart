@@ -6,8 +6,7 @@ import '../widgets/additional_label.dart';
 class DisplayRepositories extends StatelessWidget {
   final List<Repository> repositories;
 
-  DisplayRepositories({@required this.repositories})
-      : assert(repositories != null);
+  DisplayRepositories({required this.repositories});
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +48,5 @@ class DisplayRepositories extends StatelessWidget {
         Text("")
       ],
     );
-    ;
   }
 }

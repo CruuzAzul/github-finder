@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class AdditionalLabel extends StatelessWidget {
   const AdditionalLabel({
-    Key key,
-    @required this.label,
+    Key? key,
+    required this.label,
   }) : super(key: key);
 
   final String label;
