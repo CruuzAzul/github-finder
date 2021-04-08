@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^3.0.10
+  dio: ^4.0.0
   equatable: ^2.0.0
   bloc: ^7.0.0
   flutter_bloc: ^7.0.0
@@ -21,7 +21,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^5.0.2
+  mockito: ^5.0.3
   network_image_mock: ^2.0.0
   bloc_test: ^8.0.0
 

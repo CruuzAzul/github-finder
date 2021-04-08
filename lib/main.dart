@@ -5,10 +5,10 @@ import 'package:github_search/screens/homeScreen.dart';
 final dio = Dio()
   ..interceptors.add(
     InterceptorsWrapper(
-      onRequest: (RequestOptions options) {
+      onRequest: (options, handler) {
         options.headers['Authorization'] =
             'token ${const String.fromEnvironment('GITHUB_TOKEN')}';
-        return options;
+        return handler.next(options);
       },
     ),
   );
