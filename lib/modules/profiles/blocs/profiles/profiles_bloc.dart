@@ -79,7 +79,11 @@ class ProfilesBloc extends Bloc<ProfilesEvent, ProfilesState> {
   Stream<ProfilesState> mapEventToState(
     ProfilesEvent event,
   ) async* {
+    print("Je rentre dans event to State");
     if (event is FetchProfilesEvent) {
+      print("Event is FetchProfilesEvent");
+      print(event.searchText);
+      print(event.sort);
       yield* _mapFetchProfilesEventToState(event.searchText, event.sort);
     }
 
@@ -90,8 +94,12 @@ class ProfilesBloc extends Bloc<ProfilesEvent, ProfilesState> {
 
   Stream<ProfilesState> _mapFetchProfilesEventToState(
       String searchText, ProfileSort sort) async* {
+        print("Je suis dans la fonction toState");
+        print(searchText);
+        print(sort);
     try {
       if (searchText == "") {
+        print("Je suis dans l'initial");
         yield ProfilesInitialeState();
       } else {
         yield ProfilesFetchInProgressState();

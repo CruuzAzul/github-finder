@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:github_search/modules/profiles/bloc/blocs.dart';
+import 'package:github_search/modules/profiles/blocs/search/search_bloc.dart';
 
 void main() {
   group('Search Bloc Tests', () {
