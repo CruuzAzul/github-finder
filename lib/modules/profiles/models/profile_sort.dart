@@ -5,7 +5,7 @@ enum ProfileSort {
   nothing,
 }
 
-extension ProfileSortToString on ProfileSort {
+extension ProfileSortToString on ProfileSort? {
   String displayProfileSort() {
     switch (this) {
       case ProfileSort.joined:

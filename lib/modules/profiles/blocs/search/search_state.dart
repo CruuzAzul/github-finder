@@ -5,18 +5,18 @@ abstract class SearchState extends Equatable {
     this.text = ""
   });
 
-  final String text;
+  final String? text;
 
   @override
-  List<Object> get props => [text];
+  List<Object?> get props => [text];
 }
 
 class SearchInitState extends SearchState {
-  final String text;
+  final String? text;
   SearchInitState({this.text});
 }
 
 class SearchDataChange extends SearchState {
-  final String text;
+  final String? text;
   SearchDataChange({this.text});
 }

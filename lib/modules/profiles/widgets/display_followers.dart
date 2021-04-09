@@ -6,7 +6,7 @@ import '../widgets/additional_label.dart';
 class DisplayFollowers extends StatelessWidget {
   final List<Profile> profiles;
 
-  DisplayFollowers({@required this.profiles}) : assert(profiles != null);
+  DisplayFollowers({required this.profiles});
 
   @override
   Widget build(BuildContext context) {

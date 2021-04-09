@@ -1,12 +1,12 @@
 part of 'filters_bloc.dart';
 
 abstract class FiltersState extends Equatable {
-  final ProfileSort filter;
+  final ProfileSort? filter;
 
   const FiltersState({this.filter});
 
   @override
-  List<Object> get props => [filter];
+  List<Object?> get props => [filter];
 }
 
 class FiltersInitialState extends FiltersState {
@@ -14,5 +14,5 @@ class FiltersInitialState extends FiltersState {
 }
 
 class FiltersDataState extends FiltersState {
-  FiltersDataState({ProfileSort filter}) : super(filter: filter);
+  FiltersDataState({ProfileSort? filter}) : super(filter: filter);
 }

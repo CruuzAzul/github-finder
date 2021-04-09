@@ -8,10 +8,9 @@ class ProfileApiCard extends StatelessWidget {
   final Profile profile;
 
   const ProfileApiCard({
-    Key key,
-    @required this.profile,
-  })  : assert(profile != null),
-        super(key: key);
+    Key? key,
+    required this.profile,
+  })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +49,7 @@ class ProfileApiCard extends StatelessWidget {
                   height: 20,
                   child: profile.followers != null
                       ? DisplayFollowers(
-                          profiles: profile.followers,
+                          profiles: profile.followers!,
                         )
                       : SizedBox.expand(),
                 ),
@@ -61,7 +60,7 @@ class ProfileApiCard extends StatelessWidget {
                   height: 15,
                   child: profile.repositories != null
                       ? DisplayRepositories(
-                          repositories: profile.repositories,
+                          repositories: profile.repositories!,
                         )
                       : SizedBox.expand(),
                 ),
@@ -76,10 +75,9 @@ class ProfileApiCard extends StatelessWidget {
 
 class AvatarImage extends StatelessWidget {
   const AvatarImage({
-    Key key,
-    @required this.urlImage,
-  })  : assert(urlImage != null),
-        super(key: key);
+    Key? key,
+    required this.urlImage,
+  })  : super(key: key);
 
   final String urlImage;
 

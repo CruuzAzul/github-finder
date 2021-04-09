@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:github_search/modules/profiles/widgets/bottom_loader.dart';
 
 import '../blocs/blocs.dart';
 import '../widgets/profile_api_card.dart';
 
-class ProfilesList extends StatelessWidget {
-  const ProfilesList({Key key}) : super(key: key);
+class ProfilesList extends StatefulWidget {
+  const ProfilesList({Key? key}) : super(key: key);
+
+  @override
+  _ProfilesListState createState() => _ProfilesListState();
+}
+
+class _ProfilesListState extends State<ProfilesList> {
+  final _scrollController = ScrollController();
+  final _scrollThreshold = 200.0;
+  late ProfilesBloc _profilesBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+    _profilesBloc = BlocProvider.of<ProfilesBloc>(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +54,7 @@ class ProfilesList extends StatelessWidget {
             );
           }
 
-          final profiles = (state as ProfilesFetchSuccessState).profiles;
+          final profiles = (state as ProfilesFetchSuccessState).profiles!;
 
           if (profiles.isEmpty) {
             return _Status(
@@ -53,20 +70,26 @@ class ProfilesList extends StatelessWidget {
                       FetchProfilesEvent(
                         searchText: context.read<SearchBloc>().state.text,
                         sort: context.read<FiltersBloc>().state.filter,
+                        pageNumber: 1,
                       ),
                     );
               },
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
-                itemCount: profiles.length,
                 itemBuilder: (_, index) {
-                  return Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: ProfileApiCard(
-                        key: Key(profiles[index].login),
-                        profile: profiles[index],
-                      ));
+                  return index >= state.profiles!.length
+                      ? BottomLoader()
+                      : Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          child: ProfileApiCard(
+                            key: Key(profiles[index].login),
+                            profile: profiles[index],
+                          ));
                 },
+                itemCount: state.hasReachedMax
+                    ? state.profiles!.length
+                    : state.profiles!.length + 1,
+                controller: _scrollController,
               ),
             ),
           );
@@ -74,15 +97,29 @@ class ProfilesList extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (maxScroll - currentScroll <= _scrollThreshold) {
+      _profilesBloc.add(FetchProfilesEvent(
+          searchText: context.read<SearchBloc>().state.text,
+          pageNumber: context.read<ProfilesBloc>().state.pageNumber));
+    }
+  }
 }
 
 class _Status extends StatelessWidget {
   final String imageURL;
   final String label;
 
-  _Status({this.imageURL, this.label})
-      : assert(imageURL != null),
-        assert(label != null);
+  _Status({required this.imageURL, required this.label});
 
   @override
   Widget build(BuildContext context) {

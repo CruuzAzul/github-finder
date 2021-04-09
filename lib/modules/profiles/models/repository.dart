@@ -5,9 +5,7 @@ class Repository {
   final String name;
   final int stars;
 
-  Repository({@required this.name, @required this.stars})
-      : assert(name != null),
-        assert(stars != null);
+  Repository({required this.name, required this.stars});
 
   Repository.fromJson(Map<String, dynamic> json)
       : this(
@@ -16,8 +14,8 @@ class Repository {
         );
 
   Repository copyWith({
-    String name,
-    int stars,
+    String? name,
+    int? stars,
   }) {
     return Repository(
       name: name ?? this.name,

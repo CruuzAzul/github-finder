@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:github_search/modules/profiles/bloc/blocs.dart';
+import 'package:github_search/modules/profiles/blocs/search/search_bloc.dart';
 
 void main() {
   group('Search Bloc Tests', () {
@@ -20,14 +20,14 @@ void main() {
     blocTest(
       'emit [SearchInit] when SearchInit is called',
       build: () => SearchBloc(),
-      act: (bloc) async => bloc.add(SearchInit()),
+      act: (dynamic bloc) async => bloc.add(SearchInit()),
       expect: () => [SearchInitState(text: "")],
     );
 
     blocTest(
       'emit [SearchChange] when SearchInit is called',
       build: () => SearchBloc(),
-      act: (bloc) async => bloc.add(SearchChange(data: "test_txt")),
+      act: (dynamic bloc) async => bloc.add(SearchChange(data: "test_txt")),
       expect: () => [SearchDataChange(text: "test_txt")],
     );
   });
