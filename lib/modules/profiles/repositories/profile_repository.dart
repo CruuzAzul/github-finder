@@ -17,10 +17,11 @@ class ProfilesRepository {
   Future<List<Profile>?> fetchProfiles({
     String? searchText = '',
     ProfileSort? sort,
+    required int pageNumber,
   }) async {
     try {
       Response response = await dio.get(
-        'https://api.github.com/search/users?q=$searchText+in:login+in:fullname&type=Users&page=0&per_page=10&sort=${sort.profileSortToString()}',
+        'https://api.github.com/search/users?q=$searchText+in:login+in:fullname&type=Users&page=${pageNumber.toString()}&per_page=10&sort=${sort.profileSortToString()}',
       );
 
       final parsed = response.data["items"].cast<Map<String, dynamic>>();

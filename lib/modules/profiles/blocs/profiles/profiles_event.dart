@@ -10,12 +10,14 @@ abstract class ProfilesEvent {
 class FetchProfilesEvent extends ProfilesEvent {
   final String? searchText;
   final ProfileSort? sort;
+  final int pageNumber;
 
-  FetchProfilesEvent({this.searchText, this.sort});
+  FetchProfilesEvent({this.searchText, this.sort, required this.pageNumber});
 }
 
 class FetchProfilesAdditionalDataEvent extends ProfilesEvent {
-  final List<Profile> profiles;
+  final List<Profile> profileToUpdate;
+  final List<Profile> profileUpdated;
 
-  FetchProfilesAdditionalDataEvent({required this.profiles});
+  FetchProfilesAdditionalDataEvent({required this.profileToUpdate, required this.profileUpdated});
 }
